@@ -12,6 +12,9 @@ class Input(dict):
                  nick, user, host, paraml, msg):
 
         chan = paraml[0].lower()
+        self.nick = nick
+        self.chan = chan
+        self.conn = conn
         if chan == conn.nick.lower():  # is a PM
             chan = nick
 
@@ -80,7 +83,11 @@ def run(func, input):
     else:
         out = func(input.inp)
     if out is not None:
-        input.reply(unicode(out))
+        if input['trigger'] == 'define' or input['trigger'] == 'urban':
+            input.conn.msg(input['nick'], unicode(out[0]))
+            input.reply(unicode(out[1]))
+        else:
+            input.reply(unicode(out))
 
 
 def do_sieve(sieve, bot, input, func, type, args):
@@ -217,7 +224,11 @@ def main(conn, out):
                 input.inp = input.inp_unstripped.strip()
 
                 func, args = bot.commands[command]
-                dispatch(input, "command", func, args, autohelp=True)
+                if trigger == 'dictionary' or trigger == 'urban':
+                    input.say("{0}: {1}".format(input.nick, out[1]))
+                    dispatch(input, "command", func, args, autohelp=True)
+                else:
+                    dispatch(input, "command", func, args, autohelp=True)
 
         # REGEXES
         for func, args in bot.plugs['regex']:

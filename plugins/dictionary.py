@@ -8,7 +8,7 @@ from util import hook, http
 def urban(inp):
     '''.u/.urban <phrase> -- looks up <phrase> on urbandictionary.com'''
 
-    url = 'http://www.urbandictionary.com/iphone/search/define'
+    url = 'https://api.urbandictionary.com/v0/define?'
     page = http.get_json(url, term=inp, headers={'Referer': 'http://m.urbandictionary.com'})
     defs = page['list']
 
@@ -16,11 +16,12 @@ def urban(inp):
         return 'not found.'
 
     out = defs[0]['word'] + ': ' + defs[0]['definition'].replace('\r\n', ' ')
+    link = defs[0]['permalink']
 
     if len(out) > 400:
         out = out[:out.rfind(' ', 0, 400)] + '...'
 
-    return out
+    return out, link
 
 
 # define plugin by GhettoWizard & Scaevolus
