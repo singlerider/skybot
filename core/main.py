@@ -84,8 +84,11 @@ def run(func, input):
         out = func(input.inp)
     if out is not None:
         if input['trigger'] == 'define' or input['trigger'] == 'urban':
-            input.conn.msg(input['nick'], unicode(out[0]))
-            input.reply(unicode(out[1]))
+            if out == 'not found.':
+                input.reply(unicode(out))
+            else:
+                input.conn.msg(input['nick'], unicode(out[0]))
+                input.reply(unicode(out[1]))
         else:
             input.reply(unicode(out))
 
@@ -224,11 +227,7 @@ def main(conn, out):
                 input.inp = input.inp_unstripped.strip()
 
                 func, args = bot.commands[command]
-                if trigger == 'dictionary' or trigger == 'urban':
-                    input.say("{0}: {1}".format(input.nick, out[1]))
-                    dispatch(input, "command", func, args, autohelp=True)
-                else:
-                    dispatch(input, "command", func, args, autohelp=True)
+                dispatch(input, "command", func, args, autohelp=True)
 
         # REGEXES
         for func, args in bot.plugs['regex']:
