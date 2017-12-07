@@ -87,8 +87,11 @@ def run(func, input):
             if out == 'not found.':
                 input.reply(unicode(out))
             else:
-                input.conn.msg(input['nick'], unicode(out[0]))
-                input.reply(unicode(out[1]))
+                if input['chan'] == '#unfiltered':
+                    input.reply(unicode(out[0]))
+                else:
+                    input.conn.msg(input['nick'], unicode(out[0]))
+                    input.reply(unicode(out[1]))
         else:
             input.reply(unicode(out))
 
